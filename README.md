@@ -7,55 +7,78 @@ reveal.js comes with a broad range of features including [nested slides](https:/
 
 ## Table of contents
 
-- [Online Editor](#online-editor)
-- [Installation](#installation)
-  - [Basic setup](#basic-setup)
-  - [Full setup](#full-setup)
-  - [Folder Structure](#folder-structure)
-- [Instructions](#instructions)
-  - [Markup](#markup)
-  - [Markdown](#markdown)
-  - [Element Attributes](#element-attributes)
-  - [Slide Attributes](#slide-attributes)
-- [Configuration](#configuration)
-- [Presentation Size](#presentation-size)
-- [Dependencies](#dependencies)
-- [Ready Event](#ready-event)
-- [Auto-sliding](#auto-sliding)
-- [Keyboard Bindings](#keyboard-bindings)
-- [Vertical Slide Navigation](#vertical-slide-navigation)
-- [Touch Navigation](#touch-navigation)
-- [Lazy Loading](#lazy-loading)
-- [API](#api)
-  - [Slide Changed Event](#slide-changed-event)
-  - [Presentation State](#presentation-state)
-  - [Slide States](#slide-states)
-  - [Slide Backgrounds](#slide-backgrounds)
-  - [Parallax Background](#parallax-background)
-  - [Slide Transitions](#slide-transitions)
-  - [Internal links](#internal-links)
-  - [Fragments](#fragments)
-  - [Fragment events](#fragment-events)
-  - [Code syntax highlighting](#code-syntax-highlighting)
-  - [Slide number](#slide-number)
-  - [Overview mode](#overview-mode)
-  - [Fullscreen mode](#fullscreen-mode)
-  - [Embedded media](#embedded-media)
-  - [Stretching elements](#stretching-elements)
-  - [Resize Event](#resize-event)
-  - [postMessage API](#postmessage-api)
-- [PDF Export](#pdf-export)
-- [Theming](#theming)
-- [Speaker Notes](#speaker-notes)
-  - [Share and Print Speaker Notes](#share-and-print-speaker-notes)
-  - [Server Side Speaker Notes](#server-side-speaker-notes)
-- [Plugins](#plugins)
-- [Multiplexing](#multiplexing)
-  - [Master presentation](#master-presentation)
-  - [Client presentation](#client-presentation)
-  - [Socket.io server](#socketio-server)
-- [MathJax](#mathjax)
-- [License](#license)
+- [reveal.js ![Build Status](https://travis-ci.org/hakimel/reveal.js) <a href="https://slides.com?ref=github"><img src="https://s3.amazonaws.com/static.slid.es/images/slides-github-banner-320x40.png?1" alt="Slides" width="160" height="20"></a>](#revealjs-build-statushttpstravis-ciorghakimelrevealjs-a-href%22httpsslidescomrefgithub%22img-src%22httpss3amazonawscomstaticslidesimagesslides-github-banner-320x40png1%22-alt%22slides%22-width%22160%22-height%2220%22a)
+	- [Table of contents](#table-of-contents)
+			- [More reading](#more-reading)
+	- [Online Editor](#online-editor)
+	- [Installation](#installation)
+		- [Basic setup](#basic-setup)
+		- [Full setup](#full-setup)
+		- [Folder Structure](#folder-structure)
+	- [Instructions](#instructions)
+		- [Markup](#markup)
+		- [Markdown](#markdown)
+			- [External Markdown](#external-markdown)
+			- [Element Attributes](#element-attributes)
+			- [Slide Attributes](#slide-attributes)
+			- [Configuring *marked*](#configuring-marked)
+		- [Configuration](#configuration)
+		- [Presentation Size](#presentation-size)
+		- [Dependencies](#dependencies)
+		- [Ready Event](#ready-event)
+		- [Auto-sliding](#auto-sliding)
+		- [Keyboard Bindings](#keyboard-bindings)
+		- [Vertical Slide Navigation](#vertical-slide-navigation)
+			- [Navigation Mode](#navigation-mode)
+		- [Touch Navigation](#touch-navigation)
+		- [Lazy Loading](#lazy-loading)
+			- [Lazy Loading Iframes](#lazy-loading-iframes)
+		- [API](#api)
+		- [Custom Key Bindings](#custom-key-bindings)
+		- [Slide Changed Event](#slide-changed-event)
+		- [Presentation State](#presentation-state)
+		- [Slide States](#slide-states)
+		- [Slide Backgrounds](#slide-backgrounds)
+			- [Color Backgrounds](#color-backgrounds)
+			- [Image Backgrounds](#image-backgrounds)
+			- [Video Backgrounds](#video-backgrounds)
+			- [Iframe Backgrounds](#iframe-backgrounds)
+			- [Background Transitions](#background-transitions)
+		- [Parallax Background](#parallax-background)
+		- [Slide Transitions](#slide-transitions)
+		- [Internal links](#internal-links)
+		- [Fragments](#fragments)
+		- [Fragment events](#fragment-events)
+		- [Code Syntax Highlighting](#code-syntax-highlighting)
+			- [Line Numbers & Highlights](#line-numbers--highlights)
+		- [Slide number](#slide-number)
+		- [Overview mode](#overview-mode)
+		- [Fullscreen mode](#fullscreen-mode)
+		- [Embedded media](#embedded-media)
+		- [Embedded iframes](#embedded-iframes)
+		- [Stretching elements](#stretching-elements)
+		- [Resize Event](#resize-event)
+		- [postMessage API](#postmessage-api)
+	- [PDF Export](#pdf-export)
+		- [Separate pages for fragments](#separate-pages-for-fragments)
+		- [Page size](#page-size)
+		- [Print stylesheet](#print-stylesheet)
+		- [Instructions](#instructions-1)
+	- [Theming](#theming)
+	- [Speaker Notes](#speaker-notes)
+			- [Share and Print Speaker Notes](#share-and-print-speaker-notes)
+			- [Speaker notes clock and timers](#speaker-notes-clock-and-timers)
+	- [Server Side Speaker Notes](#server-side-speaker-notes)
+	- [Plugins](#plugins)
+		- [Retrieving Plugins](#retrieving-plugins)
+	- [Multiplexing](#multiplexing)
+			- [Master presentation](#master-presentation)
+			- [Client presentation](#client-presentation)
+			- [Socket.io server](#socketio-server)
+				- [socket.io server as file static server](#socketio-server-as-file-static-server)
+	- [MathJax](#mathjax)
+			- [MathJax in Markdown](#mathjax-in-markdown)
+	- [License](#license)
 
 #### More reading
 
@@ -533,11 +556,11 @@ Slides can be nested within other slides to create vertical stacks (see [Markup]
 #### Navigation Mode
 You can finetune the reveal.js navigation behavior by using the `navigationMode` config option. Note that these options are only useful for presnetations that use a mix of horizontal and vertical slides. The following navigation modes are available:
 
-| Value                         | Description |
-| :---------------------------  | :---------- |
-| default                       | Left/right arrow keys step between horizontal slides. Up/down arrow keys step between vertical slides. Space key steps through all slides (both horizontal and vertical). |
-| linear                        | Removes the up/down arrows. Left/right arrows step through all slides (both horizontal and vertical). |
-| grid                          | When this is enabled, stepping left/right from a vertical stack to an adjacent vertical stack will land you at the same vertical index.<br><br>Consider a deck with six slides ordered in two vertical stacks:<br>`1.1`&nbsp;&nbsp;&nbsp;&nbsp;`2.1`<br>`1.2`&nbsp;&nbsp;&nbsp;&nbsp;`2.2`<br>`1.3`&nbsp;&nbsp;&nbsp;&nbsp;`2.3`<br><br>If you're on slide 1.3 and navigate right, you will normally move from 1.3 -> 2.1. With navigationMode set to "grid" the same navigation takes you from 1.3 -> 2.3. |
+| Value   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| :------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| default | Left/right arrow keys step between horizontal slides. Up/down arrow keys step between vertical slides. Space key steps through all slides (both horizontal and vertical).                                                                                                                                                                                                                                                                                                                                   |
+| linear  | Removes the up/down arrows. Left/right arrows step through all slides (both horizontal and vertical).                                                                                                                                                                                                                                                                                                                                                                                                       |
+| grid    | When this is enabled, stepping left/right from a vertical stack to an adjacent vertical stack will land you at the same vertical index.<br><br>Consider a deck with six slides ordered in two vertical stacks:<br>`1.1`&nbsp;&nbsp;&nbsp;&nbsp;`2.1`<br>`1.2`&nbsp;&nbsp;&nbsp;&nbsp;`2.2`<br>`1.3`&nbsp;&nbsp;&nbsp;&nbsp;`2.3`<br><br>If you're on slide 1.3 and navigate right, you will normally move from 1.3 -> 2.1. With navigationMode set to "grid" the same navigation takes you from 1.3 -> 2.3. |
 
 ### Touch Navigation
 
@@ -733,13 +756,13 @@ All CSS color formats are supported, including hex values, keywords, `rgba()` or
 
 By default, background images are resized to cover the full page. Available options:
 
-| Attribute                        | Default    | Description |
-| :------------------------------- | :--------- | :---------- |
-| data-background-image            |            | URL of the image to show. GIFs restart when the slide opens. |
-| data-background-size             | cover      | See [background-size](https://developer.mozilla.org/docs/Web/CSS/background-size) on MDN.  |
-| data-background-position         | center     | See [background-position](https://developer.mozilla.org/docs/Web/CSS/background-position) on MDN. |
-| data-background-repeat           | no-repeat  | See [background-repeat](https://developer.mozilla.org/docs/Web/CSS/background-repeat) on MDN. |
-| data-background-opacity          | 1          | Opacity of the background image on a 0-1 scale. 0 is transparent and 1 is fully opaque. |
+| Attribute                | Default   | Description                                                                                       |
+| :----------------------- | :-------- | :------------------------------------------------------------------------------------------------ |
+| data-background-image    |           | URL of the image to show. GIFs restart when the slide opens.                                      |
+| data-background-size     | cover     | See [background-size](https://developer.mozilla.org/docs/Web/CSS/background-size) on MDN.         |
+| data-background-position | center    | See [background-position](https://developer.mozilla.org/docs/Web/CSS/background-position) on MDN. |
+| data-background-repeat   | no-repeat | See [background-repeat](https://developer.mozilla.org/docs/Web/CSS/background-repeat) on MDN.     |
+| data-background-opacity  | 1         | Opacity of the background image on a 0-1 scale. 0 is transparent and 1 is fully opaque.           |
 
 ```html
 <section data-background-image="http://example.com/image.png">
@@ -754,13 +777,13 @@ By default, background images are resized to cover the full page. Available opti
 
 Automatically plays a full size video behind the slide.
 
-| Attribute                        | Default | Description |
-| :---------------------------     | :------ | :---------- |
-| data-background-video            |         | A single video source, or a comma separated list of video sources. |
-| data-background-video-loop       | false   | Flags if the video should play repeatedly. |
-| data-background-video-muted      | false   | Flags if the audio should be muted. |
-| data-background-size             | cover   | Use `cover` for full screen and some cropping or `contain` for letterboxing. |
-| data-background-opacity          | 1       | Opacity of the background video on a 0-1 scale. 0 is transparent and 1 is fully opaque. |
+| Attribute                   | Default | Description                                                                             |
+| :-------------------------- | :------ | :-------------------------------------------------------------------------------------- |
+| data-background-video       |         | A single video source, or a comma separated list of video sources.                      |
+| data-background-video-loop  | false   | Flags if the video should play repeatedly.                                              |
+| data-background-video-muted | false   | Flags if the audio should be muted.                                                     |
+| data-background-size        | cover   | Use `cover` for full screen and some cropping or `contain` for letterboxing.            |
+| data-background-opacity     | 1       | Opacity of the background video on a 0-1 scale. 0 is transparent and 1 is fully opaque. |
 
 ```html
 <section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-video-loop data-background-video-muted>
